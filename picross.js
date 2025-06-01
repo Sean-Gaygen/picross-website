@@ -1,7 +1,7 @@
 "use strict";
 /*
 
-BIGGEST TODO: CONVERT TO TYPESCRIPT YOU FUCKING HACK!!!
+TODO: CONVERT TO TYPESCRIPT!!!
 TODO: Fix bugs in DragOperation. Namely, the neutralizing of the base block when the mouse is not in line with it.
 TODO: Add Microsoft Encatra esque styling.
 TODO: Add thicker lines on the 5s.
@@ -68,10 +68,10 @@ class Puzzle{
 	}
 
 	static changePalette(elem){
-	/* Palettes are handled in a bit of a unique way (as far as I can tell).
+	/* 
 		Each palette is saved in the CSS file as an identifier named "palX" where each variable name
-		is saved and associated with it's color. The JS file reads them (all names being specified
-		with the static in Puzzle) though the identifies, which are themselves attatched to each individual
+		is saved and associated with its color. The JS file reads them (all names being specified
+		with the static in Puzzle) though the identifies, which are themselves attached to each individual
 		option in the selector HTML element.
 
 		This is done to keep all styling in the CSS folder, as otherwise the colors would
@@ -119,16 +119,17 @@ class Puzzle{
 	
 	initBlocks(){
 		
+		let id = $(this).attr('id');
+		
 		$('.puzzleBlock').each(function(){
 
-			let current = new Block(this);
-			Block.puzzle.blocks[$(this).attr('id')] = current;
+			Block.puzzle.blocks[id] = new Block(this);
 			
 		}).mousedown(function(event){
 			
 			DragOperation.mouseState = event.which;
-			let current = Block.puzzle.blocks[$(this).attr('id')];
-			Block.puzzle.dragOp = new DragOperation(current.id, current.state); //To revert, just pass 'this' //TODO: Figure out what the fuck I meant with this???
+			let current = Block.puzzle.blocks[id];
+			Block.puzzle.dragOp = new DragOperation(current.id, current.state);
 			if (event.which === 1){
 				current.mark();
 			} else if (event.which === 3){
@@ -138,7 +139,7 @@ class Puzzle{
 		}).mouseenter(function(){
 			
 			if (Block.puzzle.dragOp !== null){
-				let current = Block.puzzle.blocks[$(this).attr('id')];
+				let current = Block.puzzle.blocks[id];
 				let result = Block.puzzle.dragOp.update(current.id, current.state); //Result will be the id of the target block, and 0 if marking, 1 if flagging, and 2 if neutralizing
 				if (result !== null){
 					switch(result[1]){
@@ -307,7 +308,7 @@ class Puzzle{
 			this.puzzleData = yHold;
 		}
 		else{
-			console.log("This code in 'decode' should never run. You better figure that out chief :^/");
+			console.log("This code in 'decode' should never run. You better figure that out.");
 		} 
 	
 	}
@@ -481,78 +482,76 @@ class Block{
 
 	mark(){
 		
-		if (!Puzzle.isEditing){
+		if (!Puzzle.isEditing) {
+  			
+  			if (this.state === 'marked'){
+  				this.neutralize();
+  			}
+  			else{
+  
+  				if (this.isMarked){
+  					Block.puzzle.correctBlocks += 1;
+  				}
+  				else if (this.state ==='flagged'){
+  					Block.puzzle.correctBlocks -= 1;
+  				}
+  
+  				let stateChange = !this.isMarked && !Puzzle.difficulty ? 'wrong' : 'marked';
+  				$(this.elem).removeClass().addClass(`puzzleBlock ${stateChange}`);
+  				this.state = 'marked';
+  
+  				if (Block.puzzle.correctBlocks === Block.puzzle.puzzleLength){
+  					Puzzle.completeGame();
+  				}
+  
+  			}
+  			
+  		}
+		
+  		else if (this.state !== 'marked') {
+			  
+			this.state = 'marked';
+			Block.puzzle.editPuzzleData(this.y, this.x, 1);
+			$(this.elem).removeClass().addClass('puzzleBlock marked');
+			this.updatePuzzleNums();
 			
-			if (this.state === 'marked'){
-				this.neutralize();
-			}
-			else{
-
-				if (this.isMarked){
-					Block.puzzle.correctBlocks += 1;
-				}
-				else if (this.state ==='flagged'){
-					Block.puzzle.correctBlocks -= 1;
-				}
-
-				let stateChange = !this.isMarked && !Puzzle.difficulty ? 'wrong' : 'marked';
-				$(this.elem).removeClass().addClass(`puzzleBlock ${stateChange}`);
-				this.state = 'marked';
-
-				if (Block.puzzle.correctBlocks === Block.puzzle.puzzleLength){
-					Puzzle.completeGame();
-				}
-
-			}
-			
-		}
-		else{
-
-			if (this.state !== 'marked'){
-				this.state = 'marked';
-				Block.puzzle.editPuzzleData(this.y, this.x, 1);
-				$(this.elem).removeClass().addClass('puzzleBlock marked');
-				this.updatePuzzleNums();
-			}
-
 		}
 
 	}
 
 	flag(){
 		
-		if (!Puzzle.isEditing){
+		if (!Puzzle.isEditing) {
+  
+  			if (this.state === 'flagged'){
+  				this.neutralize();
+  			} 
+  			else{
+  
+  				if (!this.isMarked){
+  					Block.puzzle.correctBlocks += 1;
+  				}
+  				else if (this.state ==='marked'){
+  					Block.puzzle.correctBlocks -= 1;
+  				}
+  
+  				let stateChange = this.isMarked && !Puzzle.difficulty ? 'wrong' : 'flagged';
+  				$(this.elem).removeClass().addClass(`puzzleBlock ${stateChange}`);
+  				this.state = 'flagged';
+  
+  				if (Block.puzzle.correctBlocks === Block.puzzle.puzzleLength){
+  					Puzzle.completeGame();
+  				}
+  
+  			}
+  		}
 
-			if (this.state === 'flagged'){
-				this.neutralize();
-			} 
-			else{
+	 	else if (this.state !== 'flagged') {
 
-				if (!this.isMarked){
-					Block.puzzle.correctBlocks += 1;
-				}
-				else if (this.state ==='marked'){
-					Block.puzzle.correctBlocks -= 1;
-				}
-
-				let stateChange = this.isMarked && !Puzzle.difficulty ? 'wrong' : 'flagged';
-				$(this.elem).removeClass().addClass(`puzzleBlock ${stateChange}`);
-				this.state = 'flagged';
-
-				if (Block.puzzle.correctBlocks === Block.puzzle.puzzleLength){
-					Puzzle.completeGame();
-				}
-
-			}
-		}
-		else{
-
-			if (this.state !== 'flagged'){
-				this.state = 'flagged';
-				Block.puzzle.editPuzzleData(this.y, this.x, 0);
-				$(this.elem).removeClass().addClass('puzzleBlock flagged');
-				this.updatePuzzleNums();
-			}
+			this.state = 'flagged';
+			Block.puzzle.editPuzzleData(this.y, this.x, 0);
+			$(this.elem).removeClass().addClass('puzzleBlock flagged');
+			this.updatePuzzleNums();
 
 		}
 
@@ -656,11 +655,10 @@ class DragOperation{
 
 	fixPos(id){
 		
-		if(!(this.direction & 1)){
-			return this.idSplit(id)[0] + '+' + this.x.toString(); //True = vertical
-		} 
-		else{
+		if (this.direction & 1) {
 			return this.y.toString() + '+' + this.idSplit(id)[1];
+		} else {
+			return this.idSplit(id)[0] + '+' + this.x.toString(); //True = vertical
 		}
 	}
 
@@ -673,7 +671,7 @@ class DragOperation{
 		}
 		let currentDir = this.whatDirection(this.lastBlock, id);
 		let action = this.whatAction(state, currentDir !== this.direction);
-		if(action !== null && currentDir !== null && ((currentDir & 1) === (this.direction & 1))){//If action is needed
+		if(action !== null && currentDir !== null && (currentDir & 1) === (this.direction & 1)){//If action is needed
 			if (currentDir === this.direction) { //Progressing
 				this.lastBlock = id;
 				return [this.fixPos(id), this.whatAction(state)];
@@ -786,7 +784,7 @@ $(document).ready(function(){
 		let paletteId = '#' + $(this).val();
 		Puzzle.changePalette($(paletteId));
 
-	})
+	});
 	
 	$('#editButton').click(function(){
 		

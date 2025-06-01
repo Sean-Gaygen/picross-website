@@ -184,7 +184,7 @@ button, input, select{
     grid-column: 1/2;
     display: flex;
 	flex-flow: column;
-    background-color: var(--rowNumContainer)
+    background-color: var(--rowNumContainer);
 }
 
 #colNumContainer{
