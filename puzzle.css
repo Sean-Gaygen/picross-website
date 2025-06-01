@@ -1,0 +1,211 @@
+* {
+  box-sizing: border-box;
+}
+
+/* #palTemplate{
+    --htmlBg: #ffffff;
+    --htmlBorder: #ffffff;
+    --puzzleBlockBorder: #ffffff;
+    --puzzleNum: #ffffff;
+    --puzzleNumBorder: #ffffff;
+    --rowNumContainer: #ffffff;
+    --colNumContainer: #ffffff;
+    --neutral: #ffffff;
+    --flagged: #ffffff;
+    --marked: #ffffff;
+    --wrong: #ffffff;
+    --victory: #ffffff;
+    --hoverBorder: #ffffff;
+    --controlBg: #ffffff;
+    --controlText: #ffffff;
+    --controlBorder: #ffffff;
+} */
+
+#palDev{
+    --htmlBg: #6495ed;
+    --htmlBorder: #f08080;
+    --puzzleBlockBorder: #f5f5f5;
+    --puzzleNum: #696969;
+    --puzzleNumBorder: #f5f5f5;
+    --rowNumContainer: #bebe8f;
+    --colNumContainer: #2f2f1e;
+    --neutral: #808080;
+    --flagged: #000000;
+    --marked: #ffffff;
+    --wrong: #ff0000;
+    --victory: #ffd700;
+    --hoverBorder: #000000;
+    --controlBg: #2929d8;
+    --controlText: #f08080;
+    --controlBorder: #2020a7;
+}
+
+#palHacker{
+    --htmlBg: #040f24;
+    --htmlBorder: #038d21;
+    --puzzleBlockBorder: #038d21;
+    --puzzleNum: #c2c2a3;
+    --puzzleNumBorder: #038d21;
+    --rowNumContainer: #000000;
+    --colNumContainer: #000000;
+    --neutral: #3b3b3b;
+    --flagged: #000000;
+    --marked: #007e00;
+    --wrong: #f84a4a;
+    --victory: #990000;
+    --hoverBorder: #830000;
+    --controlBg: #000041;
+    --controlText: #30a50c;
+    --controlBorder: #000072b4;
+}
+
+#palOffice{
+    --htmlBg: #ffffff;
+    --htmlBorder: #9b9b9b;
+    --puzzleBlockBorder: #916b24;
+    --puzzleNum: #000000;
+    --puzzleNumBorder: #038d21;
+    --rowNumContainer: #774d0e;
+    --colNumContainer: #774d0e;
+    --neutral: rgb(59, 59, 59);
+    --flagged: black;
+    --marked: #009900;
+    --wrong: red;
+    --victory: #990000;
+    --hoverBorder: black;
+    --controlBg: rgb(0, 0, 65);
+    --controlText: rgb(48, 165, 12);
+    --controlBorder: rgb(0, 0, 65);
+}
+
+html {
+    background-color: var(--htmlBg);
+    color: var(--htmlBorder);
+    border-color: var(--htmlBorder);
+    border-width: 10px;
+    border-style: solid;
+    min-height: 100vh;
+}
+
+h1{
+    text-align: center;
+    margin: 50px;
+}
+
+Label{
+    word-break: keep-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+button, input, select{
+    color: var(--controlText);
+    background-color: var(--controlBg);
+    border: var(--controlBorder) solid 2px;
+}
+
+.puzzleBlock{
+    z-index: auto;
+    height: 100%;
+    width: 100%;
+    border: var(--puzzleBlockBorder) solid 1px;
+    overflow: hidden;
+    position: relative;
+}
+
+.puzzleBlock:hover{
+    border: var(--hoverBorder) solid 1px;
+}
+
+.puzzleNumXbox{
+    position: relative;
+	height: 100%;
+	width: 100%;
+    color: var(--puzzleNum);
+	display: grid;
+    font-size: 75%;
+	border: var(--puzzleNumBorder) solid 1px;
+}
+
+.puzzleNumYbox{
+    position: relative;
+	width: 100%;
+    color: var(--puzzleNum);
+	display: grid;
+	font-size: 75%;
+	border: var(--puzzleNumBorder) solid 1px;
+}
+
+.rowNum, .colNum{
+	margin: auto;
+}
+
+.neutral{
+    background-color: var(--neutral);
+}
+
+.flagged{
+    background-color: var(--flagged);
+}
+
+.marked{
+    background-color: var(--marked);
+}
+
+.wrong{
+    background-color: var(--wrong);
+}
+.victory{
+    border-color: var(--victory) !important;
+}
+
+
+#puzzleContainer{
+    grid-row: 2/2;
+    grid-column: 2/2;
+	display: grid;
+    max-width: 100%;
+    min-height: 75vh;
+    position: relative;
+}
+
+#grandContainer{
+    display: grid;
+    grid-auto-rows: auto;
+    grid-template-columns: 15% 85%;
+    width: 50%;
+    min-height: 90vh;
+	overflow: visible;
+    margin: auto;
+}
+
+#rowNumContainer{
+    grid-row: 2/2;
+    grid-column: 1/2;
+    display: flex;
+	flex-flow: column;
+    background-color: var(--rowNumContainer)
+}
+
+#colNumContainer{
+    grid-row: 1/2;
+    grid-column: 2/2;
+    display: flex;
+    flex-flow: row;
+    background-color: var(--colNumContainer);
+}
+
+#controlContainer{
+	grid-row: 1;
+	grid-column: 1;
+	display: flex;
+	flex-flow: column;
+}
+
+#loadContainer{
+    margin: auto;
+    display: flex;
+    flex-flow: row;
+    grid-row: 3;
+    justify-content: space-between;
+}

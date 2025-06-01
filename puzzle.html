@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" oncontextmenu="return false;">
+	<head>
+		<meta charset="UTF-8">
+		<title>Picross</title>
+<!--        <link rel="shortcut icon" href="favicon.ico">-->
+        <link rel="stylesheet" type="text/css" href="puzzle.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script type="application/javascript" src="picross.js"></script>
+	</head>
+	<body oncontextmenu="return false;">
+		<div id="grandContainer">
+			<div id="controlContainer">
+				<button type="button" id="editButton" value="Switch to edit mode">Switch to edit mode</button>
+				<label id="xLabel" class="resLabel" for="xRes">X-Resolution</label>
+				<input type="number" id="xRes" name="xRes" step="1"></input>
+				<label id="yLabel" class="resLabel" for="yRes">Y-Resolution</label>
+				<input type="number" id="yRes" name="yRes" step="1"></input>
+				<label id="difficultyLabel" for="difficultySelector">Difficulty</label>
+				<select id="difficultySelector">
+					<option value="no help">No help</option>
+					<option value="greying numbers">Greying numbers (coming soon)</option>
+					<option value="instant feedback">Instant feedback</option>
+				</select>
+			</div>
+			<div id="colNumContainer"></div>
+			<div id="rowNumContainer"></div>
+			<div id="puzzleContainer" oncontextmenu="return false;" onmousedown="return false;"></div>
+			<div id="loadContainer">
+				<label id="inputLabel" for="inputBox"></label>
+				<input id="inputBox" value="">Puzzle Input</input>
+				<button type="button" id="loadButton" value="Load Puzzle">Load Puzzle</button>
+				<button type="button" id="exportButton" value="Export Puzzle">Export Puzzle</button>
+				<button type="button" id="randomButton" value="Random Puzzle">Random Puzzle</button>
+				<select id="paletteSelector"> <!--The values on each selecotr must be the same as the ID for palette switching to work-->
+					<option id="palHacker" value="palHacker">Hacker</option>
+					<!-- <option id="palOffice" value="palOffice">Office</option> -->
+					<!-- <option id="palVaporwave" value="palVaporwave">Vaporwave</option> -->
+					<!-- <option id="pal" value="pal"></option> -->
+					<option id="palDev" value="palDev">Development</option>
+				</select>
+			</div>
+		</div>
+	</body>
+</html>
