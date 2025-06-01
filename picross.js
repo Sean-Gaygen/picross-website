@@ -19,7 +19,7 @@ TODO: Allow for a custom palette.
 */
 
 class Puzzle{
-
+	
 	static defaultPuzzleData = 'MDkwOTEwMDAxMDEwMDEwMDAxMDEwMDEwMDAxMDEwMDEwMDAxMDEwMDAwMDAwMDAwMDEwMTAxMDAwMDEwMTAxMDAwMDEwMTAxMDAwMDEwMTAxMDExMQ==';
 	static errorPuzzleData = 'MTAxNDExMTEwMTExMDAxMTEwMTAwMDAxMDAxMDEwMDExMDAwMDEwMDEwMTAwMTEwMDAwMTExMDAxMTEwMTExMTAxMDEwMDEwMTAxMDAwMDEwMTAwMTAxMDEwMDAwMTAwMTAxMDAxMTAwMDAxMDAxMDEwMDExMDAwMDEwMDEwMTAwMTExMTEwMTAwMTAxMDAx';
 	static notFoundPuzzleData= '';
@@ -43,9 +43,9 @@ class Puzzle{
 		'--controlText',
 		'--controlBorder'
 	];
-
+	
 	constructor(puzzleData){
-
+		
 		Block.puzzle = this;
 		Block.blocks = [];
 		this.rawData = puzzleData;
@@ -64,18 +64,18 @@ class Puzzle{
 		$('#yRes').val(Block.puzzle.layout_y);
 		$('#xRes').val(Block.puzzle.layout_x);
 		Block.isLoading = 0;
-
+		
 	}
 
 	static changePalette(elem){
-		/* Palettes are handled in a bit of a unique way (as far as I can tell).
-			Each palette is saved in the CSS file as an identifier named "palX" where each variable name
-			is saved and associated with it's color. The JS file reads them (all names being specified
-			with the static in Puzzle) though the identifies, which are themselves attatched to each individual
-			option in the selector HTML element.
+	/* Palettes are handled in a bit of a unique way (as far as I can tell).
+		Each palette is saved in the CSS file as an identifier named "palX" where each variable name
+		is saved and associated with it's color. The JS file reads them (all names being specified
+		with the static in Puzzle) though the identifies, which are themselves attatched to each individual
+		option in the selector HTML element.
 
-			This is done to keep all styling in the CSS folder, as otherwise the colors would
-			have to be saved here with the JS.*/
+		This is done to keep all styling in the CSS folder, as otherwise the colors would
+		have to be saved here with the JS.*/
 
 		let r = document.querySelector(':root');
 
@@ -91,41 +91,41 @@ class Puzzle{
 			$(this).addClass('victory')
 				.off('mousedown')
 		});
-
+	
 	}
-
+	
 	initPuzzleContainer(){
 		/* calling 'this' through Block.puzzle may seem weird, but 'this' as a keyword is overwritten by the Jquery call so we needs to reach into block to access class data */
 		$('#puzzleContainer').empty();
 		$('#puzzleContainer').each(function(){
-
+			
 			for (let y = 0; y < Block.puzzle.layout_x; y++){
-
+				
 				for (let x = 0; x < Block.puzzle.layout_y; x++){
-
+					
 					jQuery('<div>', {
 						class: 'puzzleBlock',
 						id: `${x}+${y}`,
 						oncontextmenu: 'return false;',
 					}).css({
-						'grid-row' : `${x + 1}`,
+						'grid-row' : `${x + 1}`, 
 						'grid-column' : `${y + 1}`
 					}).appendTo($(this));
 				}
 			}
 		});
-
+	
 	}
-
+	
 	initBlocks(){
-
+		
 		$('.puzzleBlock').each(function(){
 
 			let current = new Block(this);
 			Block.puzzle.blocks[$(this).attr('id')] = current;
-
+			
 		}).mousedown(function(event){
-
+			
 			DragOperation.mouseState = event.which;
 			let current = Block.puzzle.blocks[$(this).attr('id')];
 			Block.puzzle.dragOp = new DragOperation(current.id, current.state);
@@ -134,9 +134,9 @@ class Puzzle{
 			} else if (event.which === 3){
 				current.flag();
 			}
-
+			
 		}).mouseenter(function(){
-
+			
 			if (Block.puzzle.dragOp !== null){
 				let current = Block.puzzle.blocks[$(this).attr('id')];
 				let result = Block.puzzle.dragOp.update(current.id, current.state); //Result will be the id of the target block, and 0 if marking, 1 if flagging, and 2 if neutralizing
@@ -154,11 +154,11 @@ class Puzzle{
 						default:
 					}
 				}
-			}
+			} 
 		});
-
+	
 	}
-
+	
 	getRowNumbers(){
 
 		let rowNumbers = [];
@@ -168,13 +168,13 @@ class Puzzle{
 		}
 
 		return rowNumbers;
-
+		
 	}
-
+	
 	getColumnNumbers(){
 
 		let colNumbers = [];
-
+		
 		for (let x = 0; x < this.layout_x; x++){
 			let currentCol = [];
 			for (let y = 0; y < this.layout_y; y++){
@@ -182,17 +182,17 @@ class Puzzle{
 			}
 			colNumbers.push(this.countConsecutiveBlocks(currentCol));
 		}
-
+		
 		return colNumbers;
-
+		
 	}
-
+	
 	countConsecutiveBlocks(line) {
-
+		
 		let blockGroups = [];
 		let currentGroup = 0;
 		let noBlocks = 1;
-
+		
 		for (let block of line) {
 			if (block) {
 				currentGroup += 1;
@@ -202,62 +202,62 @@ class Puzzle{
 				currentGroup = 0;
 			}
 		}
-
+		
 		if (currentGroup) {
 			blockGroups.push(currentGroup);
 		}
-
+		
 		if (noBlocks) {
 			blockGroups.push(0);
 		}
-
+		
 		return blockGroups;
-
+	
 	}
-
+	
 	setAllRowNumbers(){
-
+	
 		$('#rowNumContainer').empty();
 		let currentRow = 0;
 		for (let rowNumbers of this.getRowNumbers()){
-
+			
 			jQuery('<div>', {
 				class: 'puzzleNumXbox',
 				id: `row${currentRow.toString()}`
 			}).appendTo($('#rowNumContainer'));
-
+			
 			this.setRowNumbers(currentRow, rowNumbers);
-
+			
 			currentRow++;
 		}
-
+	
 	}
-
+	
 	setAllColNumbers(){
-
+		
 		$('#colNumContainer').empty();
 		let currentCol = 0;
 		for (let colNumbers of this.getColumnNumbers()){
-
+			
 			jQuery('<div>', {
 				class: 'puzzleNumYbox',
 				id: `col${currentCol.toString()}`
 			}).appendTo($('#colNumContainer'));
 
 			this.setColNumbers(currentCol, colNumbers);
-
+			
 			currentCol++;
 		}
-
+	
 	}
-
+	
 	setRowNumbers(index, nums){
-
+	
 		$(`#row${index}`).each(function(){
 			$(this).empty();
 			let currentNum = 0;
 			for (let rowNum of nums){
-
+				
 				jQuery('<div>', {
 					class: 'rowNum',
 				}).css({
@@ -267,9 +267,9 @@ class Puzzle{
 
 			}
 		})
-
+	
 	}
-
+	
 	setColNumbers(index, nums){
 
 		$(`#col${index}`).each(function(){
@@ -284,11 +284,11 @@ class Puzzle{
 				currentNum++;
 			}
 		})
-
+	
 	}
-
+	
 	decode(){
-
+		
 		let decryptedData = atob(this.rawData);
 		if (this.isDataValid(decryptedData)){
 			this.puzzleData = [];
@@ -308,12 +308,12 @@ class Puzzle{
 		}
 		else{
 			console.log("This code in 'decode' should never run. You better figure that out chief :^/");
-		}
-
+		} 
+	
 	}
-
+	
 	encode(){
-
+		
 		let yDimString = this.layout_y.toString(10).padStart(2, '0');
 		let xDimString = this.layout_x.toString(10).padStart(2, '0');
 		let puzzleBinString = '';
@@ -323,37 +323,37 @@ class Puzzle{
 			}
 		}
 		return btoa(`${yDimString}${xDimString}${puzzleBinString}`);
-
+	
 	}
-
+	
 	editPuzzleData(y, x, isMarked){
-
+		
 		if (Puzzle.isEditing){
 			this.puzzleData[y][x] = isMarked;
 		}
 
 	}
-
+	
 	isDataValid(rawData){
-
+		
 		let layout_y = parseInt(rawData.slice(0, 2));
 		let isYValid = 50 >=layout_y && layout_y > 1;
-
+		
 		let layout_x = parseInt(rawData.slice(2, 4));
 		let isXValid = 50 >=layout_x && layout_x > 1;
-
-		let isProperLength = rawData.slice(4).length === layout_y * layout_x;
+		
+ 		let isProperLength = rawData.slice(4).length === layout_y * layout_x;
 
 		return isYValid && isXValid && isProperLength;
-
+	
 	}
-
+	
 	generateBlankPuzzleData(){
-
+		
 		let y = this.layout_y.toString(10).padStart(2, '0');
 		let x = this.layout_x.toString(10).padStart(2, '0');
 		return btoa(`${y}${x}${Array(this.layout_y * this.layout_x + 1).join('0')}`); //We add 1 because .join places it's character in between array elements
-
+	
 	}
 
 	generateRandomPuzzleData(){
@@ -363,8 +363,8 @@ class Puzzle{
 		let newY = Puzzle.isEditing ? this.layout_y : Math.floor(Math.random() * 51);
 		let newX = Puzzle.isEditing ? this.layout_x : Math.floor(Math.random() * 51);
 		let newData = Array.from({ length: newY * newX }, () => Math.floor(Math.random() + 0.5)).join('');
-
-		newY += newY > 1 ? 0 : 1;
+		
+		newY += newY > 1 ? 0 : 1; 
 		newX += newX > 1 ? 0 : 1;
 
 		let y = newY.toString(10).padStart(2, '0');
@@ -373,8 +373,8 @@ class Puzzle{
 		return btoa(`${y}${x}${newData}`);
 
 	}
-
-	addColumnToCurrentData(newRes){
+	
+	addColumnToCurrentData(newRes){ 
 
 		Block.isLoading = 1;
 		let currentDataString = atob(this.encode(this.puzzleData)).slice(4);
@@ -446,18 +446,18 @@ class Puzzle{
 		return btoa(`${y}${x}${currentDataString.slice(0, this.layout_x * this.layout_y)}`);
 
 	}
-
+	
 }
 
 
 class Block{
-
+	
 	static puzzle = null;
 	static blocks = [];
 	static isLoading = 0;
-
+	
 	constructor(elem){
-
+		
 		this.elem = elem;
 		this.id = $(elem).attr('id');
 		this.y = parseInt(this.id.split('+')[0]);
@@ -476,13 +476,13 @@ class Block{
 
 		$(this.elem).addClass(this.state);
 		Block.blocks.push(this);
-
+	
 	}
 
 	mark(){
-
+		
 		if (!Puzzle.isEditing){
-
+			
 			if (this.state === 'marked'){
 				this.neutralize();
 			}
@@ -504,7 +504,7 @@ class Block{
 				}
 
 			}
-
+			
 		}
 		else{
 
@@ -520,12 +520,12 @@ class Block{
 	}
 
 	flag(){
-
+		
 		if (!Puzzle.isEditing){
 
 			if (this.state === 'flagged'){
 				this.neutralize();
-			}
+			} 
 			else{
 
 				if (!this.isMarked){
@@ -559,30 +559,30 @@ class Block{
 	}
 
 	neutralize(){
-
+		
 		if (!Puzzle.isEditing){
 			if (this.state !== 'neutral'){
-
+				
 				$(this.elem).removeClass().addClass('puzzleBlock neutral');
 				if ((this.isMarked && this.state === 'marked') || (!this.isMarked && this.state === 'flagged')){
 					Block.puzzle.correctBlocks -= 1;
 				}
 				this.state = 'neutral';
-			}
+			} 
 			else{
 				console.log("Whoops, a neutral block was neutralized :^)", this.y, this.x);
 			}
 		}
 
 	}
-
+	
 	updatePuzzleNums(){
-
+		
 		let currentRow = [];
 		for (let x of Block.puzzle.puzzleData[this.y]){
 			currentRow.push(x);
 		}
-
+		
 		let currentCol = [];
 		for (let y of Block.puzzle.puzzleData){
 			currentCol.push(y[this.x]);
@@ -591,21 +591,21 @@ class Block{
 		let rowNums = Block.puzzle.countConsecutiveBlocks(currentRow);
 
 		let colNums = Block.puzzle.countConsecutiveBlocks(currentCol);
-
+		
 		Block.puzzle.setRowNumbers(this.y, rowNums);
-
+		
 		Block.puzzle.setColNumbers(this.x, colNums);
 	}
-
+	
 }
 
 
 class DragOperation{
-
+	
 	static mouseState = 0;
-
+	
 	constructor(id, state){
-
+		
 		this.baseBlock = id;
 		this.y = this.idSplit(id)[0];
 		this.x = this.idSplit(id)[1];
@@ -614,7 +614,7 @@ class DragOperation{
 		this.action = null; //0=mark, 1=flag, 2=neutralize marked, 3=neutralise flagged.
 		if (DragOperation.mouseState === 1){
 			this.action = state === 'marked' ? 2 : 0;
-		}
+		} 
 		else if (DragOperation.mouseState === 3){
 			this.action = state === 'flagged' ? 3 : 1;
 		}
@@ -623,19 +623,19 @@ class DragOperation{
 	idSplit = id => id.split('+');
 
 	whatDirection(prev, current){
-
+		
 		let [preY, preX] = this.idSplit(prev);
 		let [curY, curX] = this.idSplit(current);
 		if (preY - curY){//if vertical
 			return preY - curY === 1 ? 0 : 2;
-		}
+		} 
 		else{ //if horizontal
 			return preX - curX === 1 ? 3 : 1;
 		}
 	}
 
 	whatAction(state, reverse=false){ //0 = mark, 1 = flag, 2 = neutralize
-
+	
 		if (!reverse &&
 			this.action === 0 && state === 'marked' ||
 			this.action === 1 && state === 'flagged' ||
@@ -643,29 +643,29 @@ class DragOperation{
 			this.action === 3 && state !== 'flagged' ||
 			reverse && state === 'neutral' && this.action > 1){
 			return null;
-		}
+		} 
 		else if(reverse &&
 			(this.action === 0 && state === 'marked' ||
-				this.action === 1 && state === 'flagged')){
+			this.action === 1 && state === 'flagged')){
 			return 2;
-		}
+		} 
 		else {
 			return this.action === 3 ? 2 : this.action;
 		}
 	}
 
 	fixPos(id){
-
+		
 		if(!(this.direction & 1)){
 			return this.idSplit(id)[0] + '+' + this.x.toString(); //True = vertical
-		}
+		} 
 		else{
 			return this.y.toString() + '+' + this.idSplit(id)[1];
 		}
 	}
 
 	update(id, state){
-
+		
 		if(this.direction === null){ //Set direction
 			this.lastBlock = id;
 			this.direction = this.whatDirection(this.baseBlock, id);
@@ -695,7 +695,7 @@ class DragOperation{
 }
 
 $(document).ready(function(){
-
+	
 	new Puzzle(Puzzle.defaultPuzzleData);
 
 	$('#yRes').prop('disabled', 1);
@@ -704,25 +704,25 @@ $(document).ready(function(){
 	$('#inputBox').val('');
 	$('#paletteSelector').val('palHacker');
 	Puzzle.changePalette($('#palHacker'));
-
+	
 	$('html').mouseup(function(){
-
+		
 		DragOperation.mouseState = 0;
 		Block.puzzle.dragOp = null;
 
 	});
-
+	
 	$('#xRes').change(function(){
-
+		
 		if(Puzzle.isEditing){
-
+			
 			let res = $(this).val();
-
+			
 			if (!(50 >= res && res > 1)){
 				$(this).val(res > 1 ? 50 : 2);
 				res = res > 1 ? 50 : 2;
 			}
-
+			
 			if (res > Block.puzzle.layout_x){
 				new Puzzle(Block.puzzle.addColumnToCurrentData(res));
 			}
@@ -732,18 +732,18 @@ $(document).ready(function(){
 		}
 
 	});
-
+	
 	$('#yRes').change(function(){
-
+		
 		if(Puzzle.isEditing){
-
+			
 			let res = $(this).val();
-
+			
 			if (!(50 >= res && res > 1)){
 				$(this).val(res > 1 ? 50 : 2);
 				res = res > 1 ? 50 : 2;
 			}
-
+			
 			if (res > Block.puzzle.layout_y){
 				new Puzzle(Block.puzzle.addRowToCurrentData(res));
 			}
@@ -753,9 +753,9 @@ $(document).ready(function(){
 		}
 
 	});
-
+	
 	$('#difficultySelector').change(function(){
-
+		
 		switch($(this).val()){
 			case "no help":
 				Puzzle.difficulty = 2;
@@ -765,9 +765,9 @@ $(document).ready(function(){
 				break;
 			case "instant feedback":
 				Puzzle.difficulty = 0;
-				break;
+				break;	
 		}
-
+		
 		for (let currentBlock of Block.blocks){
 
 			if (currentBlock.state !== 'neutral'){
@@ -778,7 +778,7 @@ $(document).ready(function(){
 
 			}
 		}
-
+	
 	});
 
 	$('#paletteSelector').change(function(){
@@ -786,10 +786,10 @@ $(document).ready(function(){
 		let paletteId = '#' + $(this).val();
 		Puzzle.changePalette($(paletteId));
 
-	})
-
+	});
+	
 	$('#editButton').click(function(){
-
+		
 		if (Puzzle.isEditing){
 
 			Puzzle.isEditing = 0;
@@ -819,7 +819,7 @@ $(document).ready(function(){
 		}
 
 	});
-
+	
 	$('#loadButton').click(function(){
 
 		let dataHold = $('#inputBox').val();
